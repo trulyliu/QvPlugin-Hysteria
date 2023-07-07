@@ -5,8 +5,8 @@
 OutboundEditor::OutboundEditor(QWidget *parent) : Qv2rayPlugin::QvPluginEditor(parent)
 {
     setupUi(this);
-    textUpMbps->setValidator(new QRegExpValidator(QRegExp("[0-9]+$")));
-    textDownMbps->setValidator(new QRegExpValidator(QRegExp("[0-9]+$")));
+    textUpMbps->setValidator(new QRegularExpressionValidator(QRegularExpression("[0-9]+$")));
+    textDownMbps->setValidator(new QRegularExpressionValidator(QRegularExpression("[0-9]+$")));
 }
 
 void OutboundEditor::SetContent(const QJsonObject &r)
