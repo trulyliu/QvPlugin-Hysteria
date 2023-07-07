@@ -114,7 +114,7 @@ jobs:
         uses: svenstaro/upload-release-action@v1-release
         if: github.event_name == 'release' && matrix.platform == 'windows-latest'
         with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          repo_token: ${{ secrets.HYSTERIA_CI_TOKEN }}
           file: build/Release/${{ steps.get_name.outputs.NAME }}.dll
           asset_name: ${{ steps.get_name.outputs.NAME }}.${{ steps.get_version.outputs.VERSION }}.Windows-${{ matrix.arch }}.dll
           tag: ${{ github.ref }}
@@ -130,7 +130,7 @@ jobs:
         uses: svenstaro/upload-release-action@v1-release
         if: github.event_name == 'release' && matrix.platform == 'macos-latest'
         with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          repo_token: ${{ secrets.HYSTERIA_CI_TOKEN }}
           file: build/lib${{ steps.get_name.outputs.NAME }}.so
           asset_name: ${{ steps.get_name.outputs.NAME }}.${{ steps.get_version.outputs.VERSION }}.macOS-${{ matrix.arch }}.so
           tag: ${{ github.ref }}
@@ -146,7 +146,7 @@ jobs:
         uses: svenstaro/upload-release-action@v1-release
         if: github.event_name == 'release' && matrix.platform == 'ubuntu-22.04'
         with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          repo_token: ${{ secrets.HYSTERIA_CI_TOKEN }}
           file: build/lib${{ steps.get_name.outputs.NAME }}.so
           asset_name: ${{ steps.get_name.outputs.NAME }}.${{ steps.get_version.outputs.VERSION }}.linux-${{ matrix.arch }}.so
           tag: ${{ github.ref }}
