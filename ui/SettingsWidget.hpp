@@ -8,7 +8,7 @@
     #elif defined(Q_OS_MAC)
         #define DEFAULT_KERNEL_PATH (QApplication::applicationDirPath() + "naiveproxy")
     #else
-        #define DEFAULT_KERNEL_PATH "/bin/naiveproxy"
+        #define DEFAULT_KERNEL_PATH "/bin/hysteria"
     #endif
 #endif
 
