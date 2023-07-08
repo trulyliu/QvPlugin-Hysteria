@@ -7,7 +7,7 @@
 
 using namespace Qv2rayPlugin;
 
-class NaiveProxyPlugin
+class HysteriaPlugin
     : public QObject
     , public Qv2rayInterface
 {
@@ -19,12 +19,12 @@ class NaiveProxyPlugin
     // Basic metainfo of this plugin
     const QvPluginMetadata GetMetadata() const override
     {
-        return QvPluginMetadata{ "NaiveProxy Plugin",     //
+        return QvPluginMetadata{ "Hysteria Plugin",     //
                                  "Qv2ray Workgroup",      //
-                                 "qvplugin_naiveproxy",   //
-                                 "NaiveProxy Plugin.",    //
+                                 "qvplugin_Hysteria",   //
+                                 "Hysteria Plugin.",    //
                                  "v3.0.0",                //
-                                 "Qv2ray/QvPlugin-Naive", //
+                                 "Qv2ray/QvPlugin-Hysteria", //
                                  {
                                      COMPONENT_GUI,             //
                                      COMPONENT_KERNEL,          //
@@ -39,4 +39,4 @@ class NaiveProxyPlugin
     void PluginErrorMessageBox(const QString &, const QString &) const override;
 };
 
-DECLARE_PLUGIN_INSTANCE(NaiveProxyPlugin);
+DECLARE_PLUGIN_INSTANCE(HysteriaPlugin);

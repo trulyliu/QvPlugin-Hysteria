@@ -22,7 +22,7 @@ class NaiveUIInterface : public Qv2rayPlugin::PluginGUIInterface
     }
     virtual QList<typed_plugin_editor> createOutboundEditors() const override
     {
-        return { MakeEditorInfoPair<OutboundEditor>("naive", "NaiveProxy") };
+        return { MakeEditorInfoPair<OutboundEditor>("naive", "Hysteria") };
     }
     virtual std::unique_ptr<QvPluginMainWindowWidget> createMainWindowWidget() const override
     {

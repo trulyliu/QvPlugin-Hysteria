@@ -2,7 +2,7 @@
 
 #include <QUrlQuery>
 
-const QString NaiveProxyOutboundHandler::SerializeOutbound(const QString &, const QString &alias, const QString &, const QJsonObject &object,
+const QString HysteriaOutboundHandler::SerializeOutbound(const QString &, const QString &alias, const QString &, const QJsonObject &object,
                                                            const QJsonObject &) const
 {
     QUrl url;
@@ -32,7 +32,7 @@ const QString NaiveProxyOutboundHandler::SerializeOutbound(const QString &, cons
     return url.toString();
 }
 
-const void NaiveProxyOutboundHandler::SetOutboundInfo(const QString &protocol, const Qv2rayPlugin::OutboundInfoObject &info,
+const void HysteriaOutboundHandler::SetOutboundInfo(const QString &protocol, const Qv2rayPlugin::OutboundInfoObject &info,
                                                       QJsonObject &outbound) const
 {
     if (protocol != "naive")
@@ -45,7 +45,7 @@ const void NaiveProxyOutboundHandler::SetOutboundInfo(const QString &protocol, c
         outbound["sni"] = info[Qv2rayPlugin::INFO_SNI].toString();
 }
 
-const QPair<QString, QJsonObject> NaiveProxyOutboundHandler::DeserializeOutbound(const QString &link, QString *alias,
+const QPair<QString, QJsonObject> HysteriaOutboundHandler::DeserializeOutbound(const QString &link, QString *alias,
                                                                                  QString *errorMessage) const
 {
     QUrl url(link);
@@ -74,7 +74,7 @@ const QPair<QString, QJsonObject> NaiveProxyOutboundHandler::DeserializeOutbound
                                    { "padding", usePadding } } };
 }
 
-const Qv2rayPlugin::OutboundInfoObject NaiveProxyOutboundHandler::GetOutboundInfo(const QString &protocol, const QJsonObject &outbound) const
+const Qv2rayPlugin::OutboundInfoObject HysteriaOutboundHandler::GetOutboundInfo(const QString &protocol, const QJsonObject &outbound) const
 {
     return { //
              { Qv2rayPlugin::INFO_PROTOCOL, protocol },

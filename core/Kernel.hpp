@@ -4,10 +4,10 @@
 
 #include <QProcess>
 
-class NaiveProxyKernel : public Qv2rayPlugin::PluginKernel
+class HysteriaKernel : public Qv2rayPlugin::PluginKernel
 {
   public:
-    explicit NaiveProxyKernel();
+    explicit HysteriaKernel();
     bool StartKernel() override;
     bool StopKernel() override;
     void SetConnectionSettings(const QMap<Qv2rayPlugin::KernelOptionFlags, QVariant> &options, const QJsonObject &settings) override;
@@ -40,7 +40,7 @@ class NaiveKernelInterface : public Qv2rayPlugin::PluginKernelInterface
   public:
     virtual std::unique_ptr<Qv2rayPlugin::PluginKernel> CreateKernel() const override
     {
-        return std::make_unique<NaiveProxyKernel>();
+        return std::make_unique<HysteriaKernel>();
     }
     virtual QList<QString> GetKernelProtocols() const override
     {

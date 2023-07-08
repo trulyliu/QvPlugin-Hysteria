@@ -3,10 +3,10 @@
 
 #include <QObject>
 
-class NaiveProxyOutboundHandler : public Qv2rayPlugin::PluginOutboundHandler
+class HysteriaOutboundHandler : public Qv2rayPlugin::PluginOutboundHandler
 {
   public:
-    explicit NaiveProxyOutboundHandler() : Qv2rayPlugin::PluginOutboundHandler(){};
+    explicit HysteriaOutboundHandler() : Qv2rayPlugin::PluginOutboundHandler(){};
     const QString SerializeOutbound(const QString &protocol,   //
                                     const QString &alias,      //
                                     const QString &groupName,  //

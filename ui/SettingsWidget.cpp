@@ -26,7 +26,7 @@ void SettingsWidget::on_textKernelPath_textEdited(const QString &arg1)
 
 void SettingsWidget::on_buttonBrowseKernel_clicked()
 {
-    const auto core = QFileDialog::getOpenFileName(this, tr("Open NaiveProxy Kernel"), QDir::currentPath());
+    const auto core = QFileDialog::getOpenFileName(this, tr("Open Hysteria Kernel"), QDir::currentPath());
 
     if (!core.isEmpty())
     {
@@ -59,10 +59,10 @@ void SettingsWidget::on_buttonTestKernel_clicked()
     const auto exitCode = process.exitCode();
     if (exitCode != 0)
     {
-        QMessageBox::warning(this, tr("NaiveProxy Core Test Failed"), tr("NaiveProxy Core failed with exit code %1").arg(exitCode));
+        QMessageBox::warning(this, tr("Hysteria Core Test Failed"), tr("Hysteria Core failed with exit code %1").arg(exitCode));
         return;
     }
 
     QString output = process.readAllStandardOutput();
-    QMessageBox::information(this, tr("NaiveProxy Test Result"), tr("NaiveProxy: %1").arg(output));
+    QMessageBox::information(this, tr("Hysteria Test Result"), tr("Hysteria: %1").arg(output));
 }

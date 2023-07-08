@@ -1,11 +1,11 @@
 #include "Kernel.hpp"
 
-#include "SimplePlugin.hpp"
+#include "HysteriaPlugin.hpp"
 #include "interface/QvPluginInterface.hpp"
 
 #include <QFile>
 
-NaiveProxyKernel::NaiveProxyKernel() : Qv2rayPlugin::PluginKernel()
+HysteriaKernel::HysteriaKernel() : Qv2rayPlugin::PluginKernel()
 {
     process.setProcessChannelMode(QProcess::MergedChannels);
     connect(&process, &QProcess::readyRead, [this]() { emit this->OnKernelLogAvailable(process.readAll()); });
@@ -14,18 +14,18 @@ NaiveProxyKernel::NaiveProxyKernel() : Qv2rayPlugin::PluginKernel()
         {
             this->isStarted = false;
             StopKernel();
-            emit OnKernelCrashed(tr("NaiveProxy kernel crashed with code %1").arg(process.exitCode()));
+            emit OnKernelCrashed(tr("Hysteria kernel crashed with code %1").arg(process.exitCode()));
         }
     });
 }
 
-bool NaiveProxyKernel::StartKernel()
+bool HysteriaKernel::StartKernel()
 {
-    const auto executablePath = NaiveProxyPluginInstance->GetSettngs()["kernelPath"].toString();
+    const auto executablePath = HysteriaPluginInstance->GetSettngs()["kernelPath"].toString();
     if (!QFile::exists(executablePath))
     {
-        NaiveProxyPluginInstance->PluginErrorMessageBox(
-            tr("Naive!"), tr("We cannot find your NaiveProxy kernel. Please configure it in the plugin settings."));
+        HysteriaPluginInstance->PluginErrorMessageBox(
+            tr("Naive!"), tr("We cannot find your Hysteria kernel. Please configure it in the plugin settings."));
         return false;
     }
 
@@ -77,7 +77,7 @@ bool NaiveProxyKernel::StartKernel()
     return true;
 }
 
-void NaiveProxyKernel::SetConnectionSettings(const QMap<Qv2rayPlugin::KernelOptionFlags, QVariant> &options, const QJsonObject &settings)
+void HysteriaKernel::SetConnectionSettings(const QMap<Qv2rayPlugin::KernelOptionFlags, QVariant> &options, const QJsonObject &settings)
 {
     sni.clear();
     this->listenIp = options[KERNEL_LISTEN_ADDRESS].toString();
@@ -108,7 +108,7 @@ void NaiveProxyKernel::SetConnectionSettings(const QMap<Qv2rayPlugin::KernelOpti
     }
 }
 
-bool NaiveProxyKernel::StopKernel()
+bool HysteriaKernel::StopKernel()
 {
     if (this->httpPort)
     {

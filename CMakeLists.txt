@@ -1,4 +1,4 @@
-project(QvPlugin-NaiveProxy)
+project(QvPlugin-Hysteria)
 cmake_minimum_required(VERSION 3.1.0)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -28,8 +28,8 @@ include(interface/QvGUIPluginInterface.cmake)
 include_directories(${QVPLUGIN_INTERFACE_INCLUDE_DIR})
 
 add_library(${PROJECT_NAME} MODULE
-    SimplePlugin.hpp
-    SimplePlugin.cpp
+    HysteriaPlugin.hpp
+    HysteriaPlugin.cpp
     core/EventHandler.cpp
     core/EventHandler.hpp
     core/Serializer.cpp
