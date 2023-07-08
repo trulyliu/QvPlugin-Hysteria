@@ -13,7 +13,7 @@ class HysteriaKernel : public Qv2rayPlugin::PluginKernel
     void SetConnectionSettings(const QMap<Qv2rayPlugin::KernelOptionFlags, QVariant> &options, const QJsonObject &settings) override;
     QString GetKernelName() const override
     {
-        return "Naive";
+        return "Hysteria";
     }
 
   private:
@@ -26,7 +26,7 @@ class HysteriaKernel : public Qv2rayPlugin::PluginKernel
     int port;
     QProcess process;
     //
-    QString sni;
+    QString sni; // peer
 
   private:
     bool isStarted = false;
@@ -35,7 +35,7 @@ class HysteriaKernel : public Qv2rayPlugin::PluginKernel
     Qv2rayPlugin::Utils::HttpProxy httpProxy;
 };
 
-class NaiveKernelInterface : public Qv2rayPlugin::PluginKernelInterface
+class HysteriaKernelInterface : public Qv2rayPlugin::PluginKernelInterface
 {
   public:
     virtual std::unique_ptr<Qv2rayPlugin::PluginKernel> CreateKernel() const override
@@ -44,6 +44,6 @@ class NaiveKernelInterface : public Qv2rayPlugin::PluginKernelInterface
     }
     virtual QList<QString> GetKernelProtocols() const override
     {
-        return { "naive" };
+        return { "hysteria" };
     }
 };

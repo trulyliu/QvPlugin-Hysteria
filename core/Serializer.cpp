@@ -6,25 +6,51 @@ const QString HysteriaOutboundHandler::SerializeOutbound(const QString &, const 
                                                            const QJsonObject &) const
 {
     QUrl url;
-    if (const auto protocol = object["protocol"].toString(); protocol != "https" && protocol != "quic")
-        url.setScheme("naive+https");
-    else
-        url.setScheme("naive+" + protocol);
-
-    if (const auto username = object["username"].toString(); !username.isEmpty())
-        url.setUserName(username);
-    if (const auto password = object["password"].toString(); !password.isEmpty())
-        url.setPassword(password);
-
+    QUrlQuery query;
+    url.setScheme("hysteria");
     url.setHost(object["host"].toString());
-
     if (const auto port = object["port"].toInt(443); port <= 0 || port >= 65536)
         url.setPort(443);
     else
         url.setPort(port);
 
-    QUrlQuery query;
-    query.setQueryItems({ { "padding", object["padding"].toBool() ? "true" : "false" } });
+    const QStringList protocols{"udp", "wetchat-video", "faketcp"};
+    if (const auto protocol = object["protocol"].toString(); protocols.contains(protocol)) {
+        query.addQueryItem("protocol", protocol);
+    }
+
+    if (const auto auth_str = object["auth_str"].toString(); !auth_str.isEmpty()) {
+        query.addQueryItem("auth", auth_str);
+    }
+
+    if (const auto sni = object["sni"].toString(); !sni.isEmpty()) {
+        query.addQueryItem("peer", sni);
+    }
+
+    if (const auto insecure = object["insecure"].toBool(false); insecure) {
+        query.addQueryItem("insecure", object["insecure"].toString());
+    }
+
+    if (const auto upMbps = object["up_mbps"].toString(); !upMbps.isEmpty()) {
+        query.addQueryItem("upmbps", upMbps);
+    }
+
+    if (const auto downMbps = object["down_mbps"].toString(); !downMbps.isEmpty()) {
+        query.addQueryItem("downmbps", downMbps);
+    }
+
+    if (const auto alpn = object["alpn"].toString(); !alpn.isEmpty()) {
+        query.addQueryItem("alpn", alpn);
+    }
+
+    if (const auto obfs = object["obfs"].toString(); !obfs.isEmpty() && obfs == "xplus") {
+        query.addQueryItem("obfs", obfs);
+    }
+
+    if (const auto obfsStr = object["obfs_str"].toString(); !obfsStr.isEmpty()) {
+        query.addQueryItem("obfsParam", obfsStr);
+    }
+
     url.setQuery(query);
 
     url.setFragment(alias);
@@ -48,30 +74,67 @@ const void HysteriaOutboundHandler::SetOutboundInfo(const QString &protocol, con
 const QPair<QString, QJsonObject> HysteriaOutboundHandler::DeserializeOutbound(const QString &link, QString *alias,
                                                                                  QString *errorMessage) const
 {
-    QUrl url(link);
-    if (!url.isValid())
+    const QString prefix = "hysteria://";
+    if (!link.startsWith(prefix))
     {
-        *errorMessage = url.errorString();
+        *errorMessage = ("Invalid Hysteria URI");
         return {};
     }
 
-    const auto description = url.fragment();
+    const auto trueList = QStringList{ "true", "1", "yes", "y" };
+    const QUrl hysteriaUrl(link.trimmed());
+    const QUrlQuery query(hysteriaUrl.query());
+    QJsonObject result;
+
+    auto getQueryValue = [&](const QString &key) {
+        return query.queryItemValue(key, QUrl::FullyDecoded);
+    };
+
+    if (!hysteriaUrl.isValid())
+    {
+        *errorMessage = hysteriaUrl.errorString();
+        return {};
+    }
+
+
+    const auto description = hysteriaUrl.fragment(QUrl::FullyDecoded);
     if (!description.isEmpty())
     {
         *alias = description;
     }
     else
     {
-        *alias = QString("[%1]-%2:%3").arg(url.scheme()).arg(url.host()).arg(url.port());
+        *alias = QString("[%1]-%2:%3").arg(hysteriaUrl.scheme()).arg(hysteriaUrl.host()).arg(hysteriaUrl.port());
     }
-    const QStringList trueList = { "1", "true", "yes", "y", "on" };
-    const auto usePadding = trueList.contains(QUrlQuery{ url }.queryItemValue("padding").toLower());
-    return { "naive", QJsonObject{ { "protocol", url.scheme() },
-                                   { "host", url.host() },
-                                   { "port", url.port(443) },
-                                   { "username", url.userName() },
-                                   { "password", url.password() },
-                                   { "padding", usePadding } } };
+
+    result["insecure"] = trueList.contains(query.queryItemValue("insecure").toLower()); // insecure, optional
+    result["host"] = hysteriaUrl.host();
+    result["port"] = hysteriaUrl.port(443);
+    result["protocol"] = getQueryValue("protocol").isEmpty() ? "udp" : getQueryValue("protocol"); // protocol, optional, default "udp"
+    result["auth_str"] = getQueryValue("auth"); // authentication payload (string) (optional)
+
+    // process sni (and also "peer")
+    if (query.hasQueryItem("sni"))
+    {
+        result["sni"] = getQueryValue("sni");
+    }
+    else if (query.hasQueryItem("peer"))
+    {
+        // This is evil and may be removed in a future version.
+        qWarning() << "use of 'peer' in trojan url is deprecated";
+        result["sni"] = getQueryValue("peer");
+    }
+
+    result["up_mbps"] = getQueryValue("upmbps");
+    result["down_mbps"] = getQueryValue("downmbps");
+    result["alpn"] = getQueryValue("alpn"); // alpn: QUIC ALPN (optional)
+    if (const auto obfsMode = getQueryValue("obfs"); !obfsMode.isEmpty()) {
+        qWarning() << "Non-empty obfs mode is not well supported. Official document missing.";
+    }
+    result["obfs_mode"] = getQueryValue("obfs"); // obfs: Obfuscation mode (optional, empty or "xplus")
+    result["obfs"] = getQueryValue("obfsParam"); // obfsParam: Obfuscation password (optional)
+
+    return { "hysteria", result};
 }
 
 const Qv2rayPlugin::OutboundInfoObject HysteriaOutboundHandler::GetOutboundInfo(const QString &protocol, const QJsonObject &outbound) const

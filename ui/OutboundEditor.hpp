@@ -33,9 +33,15 @@ class OutboundEditor
 
   private slots:
     void on_comboProtocol_currentTextChanged(const QString &arg1);
-    void on_textUsername_textEdited(const QString &arg1);
-    void on_textPassword_textEdited(const QString &arg1);
-    void on_checkPadding_stateChanged(int arg1);
+    void on_textAlpn_textEdited(const QString &arg1);
+    void on_textAuthStr_textEdited(const QString &arg1);
+    void on_textSNI_textEdited(const QString &arg1);
+    void on_textUpMbps_textEdited(const QString &arg1);
+    void on_textDownMbps_textEdited(const QString &arg1);
+    void on_textObfs_textEdited(const QString &arg1);
+    void on_checkInsecure_stateChanged(int arg1);
+    void on_textCaPath_textEdited(const QString &arg1);
+    void on_buttonBrowseCa_clicked();
 
   private:
     QJsonObject root;

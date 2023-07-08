@@ -6,7 +6,7 @@
 
 using namespace Qv2rayPlugin;
 
-class NaiveUIInterface : public Qv2rayPlugin::PluginGUIInterface
+class HysteriaUIInterface : public Qv2rayPlugin::PluginGUIInterface
 {
     QIcon Icon() const override
     {

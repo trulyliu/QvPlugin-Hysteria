@@ -19,10 +19,10 @@ class HysteriaOutboundHandler : public Qv2rayPlugin::PluginOutboundHandler
     const void SetOutboundInfo(const QString &protocol, const Qv2rayPlugin::OutboundInfoObject &info, QJsonObject &outbound) const override;
     const QList<QString> SupportedProtocols() const override
     {
-        return { "naive" };
+        return { "hysteria" };
     }
     const QList<QString> SupportedLinkPrefixes() const override
     {
-        return { "naive+https://", "naive+quic://" };
+        return { "hysteria://"};
     }
 };

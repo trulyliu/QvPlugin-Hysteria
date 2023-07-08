@@ -15,8 +15,8 @@ bool HysteriaPlugin::InitializePlugin(const QString &, const QJsonObject &_setti
     HysteriaPluginInstance = this;
     emit PluginLog("Initializing Hysteria plugin.");
     this->outboundHandler = std::make_unique<HysteriaOutboundHandler>();
-    this->eventHandler = std::make_unique<NaiveEventHandler>();
-    this->kernelInterface = std::make_shared<NaiveKernelInterface>();
-    this->guiInterface = new NaiveUIInterface();
+    this->eventHandler = std::make_unique<HysteriaEventHandler>();
+    this->kernelInterface = std::make_shared<HysteriaKernelInterface>();
+    this->guiInterface = new HysteriaUIInterface();
     return true;
 }

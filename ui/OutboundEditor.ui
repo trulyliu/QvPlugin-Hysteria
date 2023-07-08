@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>252</width>
-    <height>190</height>
+    <width>321</width>
+    <height>348</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,7 +17,7 @@
    <item row="0" column="0">
     <widget class="QLabel" name="labelProtocol">
      <property name="text">
-      <string>Protocol</string>
+      <string>protocol</string>
      </property>
      <property name="textFormat">
       <enum>Qt::PlainText</enum>
@@ -28,33 +28,45 @@
     <widget class="QComboBox" name="comboProtocol">
      <item>
       <property name="text">
-       <string notr="true">https</string>
+       <string notr="true">udp</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string notr="true">quic</string>
+       <string notr="true">wechat-video</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string notr="true">faketcp</string>
       </property>
      </item>
     </widget>
    </item>
    <item row="1" column="0">
-    <widget class="QLabel" name="labelUsername">
-     <property name="text">
-      <string>Username</string>
+    <widget class="QLabel" name="labelAlpn">
+     <property name="enabled">
+      <bool>true</bool>
      </property>
-     <property name="textFormat">
-      <enum>Qt::PlainText</enum>
+     <property name="text">
+      <string>alpn</string>
      </property>
     </widget>
    </item>
    <item row="1" column="1">
-    <widget class="QLineEdit" name="textUsername"/>
+    <widget class="QLineEdit" name="textAlpn">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="placeholderText">
+      <string>QUIC TLS ALPN (Optional)</string>
+     </property>
+    </widget>
    </item>
    <item row="2" column="0">
-    <widget class="QLabel" name="labelPassword">
+    <widget class="QLabel" name="labelAuthStr">
      <property name="text">
-      <string>Password</string>
+      <string>auth_str</string>
      </property>
      <property name="textFormat">
       <enum>Qt::PlainText</enum>
@@ -62,16 +74,16 @@
     </widget>
    </item>
    <item row="2" column="1">
-    <widget class="QLineEdit" name="textPassword">
-     <property name="echoMode">
-      <enum>QLineEdit::PasswordEchoOnEdit</enum>
+    <widget class="QLineEdit" name="textAuthStr">
+     <property name="placeholderText">
+      <string>Authentication payload in string</string>
      </property>
     </widget>
    </item>
    <item row="3" column="0">
-    <widget class="QLabel" name="labelPadding">
+    <widget class="QLabel" name="labelSNI">
      <property name="text">
-      <string>Padding</string>
+      <string>server_name</string>
      </property>
      <property name="textFormat">
       <enum>Qt::PlainText</enum>
@@ -79,9 +91,104 @@
     </widget>
    </item>
    <item row="3" column="1">
-    <widget class="QCheckBox" name="checkPadding">
+    <widget class="QLineEdit" name="textSNI">
+     <property name="echoMode">
+      <enum>QLineEdit::Normal</enum>
+     </property>
+     <property name="placeholderText">
+      <string>SNI for TLS (optional)</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="QLabel" name="labelUpMbps">
      <property name="text">
-      <string>Enabled</string>
+      <string>up_mbps</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1">
+    <widget class="QLineEdit" name="textUpMbps">
+     <property name="text">
+      <string>100</string>
+     </property>
+     <property name="placeholderText">
+      <string>Max upload Mbps</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0">
+    <widget class="QLabel" name="labelDownMbps">
+     <property name="text">
+      <string>down_mbps</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1">
+    <widget class="QLineEdit" name="textDownMbps">
+     <property name="text">
+      <string>300</string>
+     </property>
+     <property name="placeholderText">
+      <string>Max download Mbps</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="0">
+    <widget class="QLabel" name="labelObfs">
+     <property name="text">
+      <string>obfs</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="1">
+    <widget class="QLineEdit" name="textObfs">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="placeholderText">
+      <string>Obfuscation password</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="0">
+    <widget class="QLabel" name="labelInsecure">
+     <property name="text">
+      <string>insecure</string>
+     </property>
+     <property name="textFormat">
+      <enum>Qt::PlainText</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="1">
+    <widget class="QCheckBox" name="checkInsecure">
+     <property name="toolTip">
+      <string/>
+     </property>
+     <property name="text">
+      <string>Ignore certificate errors </string>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLineEdit" name="textCaPath"/>
+     </item>
+     <item>
+      <widget class="QPushButton" name="buttonBrowseCa">
+       <property name="text">
+        <string>...</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="8" column="0">
+    <widget class="QLabel" name="labelCa">
+     <property name="text">
+      <string>ca</string>
      </property>
     </widget>
    </item>

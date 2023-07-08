@@ -25,7 +25,7 @@ bool HysteriaKernel::StartKernel()
     if (!QFile::exists(executablePath))
     {
         HysteriaPluginInstance->PluginErrorMessageBox(
-            tr("Naive!"), tr("We cannot find your Hysteria kernel. Please configure it in the plugin settings."));
+            tr("Hysteria!"), tr("We cannot find your Hysteria kernel. Please configure it in the plugin settings."));
         return false;
     }
 
