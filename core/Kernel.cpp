@@ -4,8 +4,11 @@
 #include "interface/QvPluginInterface.hpp"
 
 #include <QFile>
+#include <QJsonDocument>
+#include <QTemporaryDir>
+#include <QTemporaryFile>
 
-HysteriaKernel::HysteriaKernel() : Qv2rayPlugin::PluginKernel()
+HysteriaKernel::HysteriaKernel() : Qv2rayPlugin::PluginKernel(), hysteriaConfJson(QDir::temp().absoluteFilePath(".qv2ray-hyteria-XXXXXX.json"))
 {
     process.setProcessChannelMode(QProcess::MergedChannels);
     connect(&process, &QProcess::readyRead, [this]() { emit this->OnKernelLogAvailable(process.readAll()); });
@@ -29,41 +32,19 @@ bool HysteriaKernel::StartKernel()
         return false;
     }
 
-    QStringList arguments{ "--log" };
+    QJsonDocument strJson = QJsonDocument(hysteriaConf);
+    hysteriaConfJson.setAutoRemove(true);
+    hysteriaConfJson.open();
+    HysteriaPluginInstance->PluginLog("Hysteria config file " + hysteriaConfJson.fileName());
+    hysteriaConfJson.open();
+    hysteriaConfJson.write(strJson.toJson());
+    hysteriaConfJson.close();
 
-    // proxy
-    {
-        QUrl url;
-        url.setScheme(protocol.replace("naive+", ""));
-        if (!username.isEmpty() || !password.isEmpty())
-        {
-            url.setUserName(username);
-            url.setPassword(password);
-        }
-        if (!sni.isEmpty())
-        {
-            // ### Hack : SNI is used for proxychains
-            url.setHost(sni);
-            arguments << QString("--host-resolver-rules=MAP %1 127.0.0.1").arg(sni);
-        }
-        else
-        {
-            url.setHost(host);
-        }
-        url.setPort(port);
-        arguments << QString("--proxy=%1").arg(url.url());
-    }
-
-    if (this->padding)
-    {
-        arguments << "--padding";
-    }
-
-    // listen socks
-    if (this->socksPort)
-    {
-        arguments << QString("--listen=socks://%1:%2").arg(listenIp).arg(socksPort);
-    }
+    QStringList arguments{ "client" };
+    arguments << "--config";
+    arguments << hysteriaConfJson.fileName();
+    arguments << "--log-level";
+    arguments << "info";
 
     // listen http
     if (this->httpPort)
@@ -83,28 +64,57 @@ void HysteriaKernel::SetConnectionSettings(const QMap<Qv2rayPlugin::KernelOption
     this->listenIp = options[KERNEL_LISTEN_ADDRESS].toString();
     this->socksPort = options[KERNEL_SOCKS_ENABLED].toBool() ? options[KERNEL_SOCKS_PORT].toInt() : 0;
     this->httpPort = options[KERNEL_HTTP_ENABLED].toBool() ? options[KERNEL_HTTP_PORT].toInt() : 0;
-    this->host = settings["host"].toString();
-    this->port = settings["port"].toInt(443);
-    this->username = settings["username"].toString();
-    this->password = settings["password"].toString();
-    this->protocol = settings["protocol"].toString();
-    this->padding = settings["padding"].toBool();
-    //
-    // Special SNI option
-    if (settings.contains("sni"))
-        sni = settings["sni"].toString();
-    //
 
-    if (this->protocol != "https" && this->protocol != "quic")
-    {
-        emit OnKernelLogAvailable("warning: outbound protocol falled back to https");
-        this->protocol = "https";
+    hysteriaConf["server"] =  QString("%1:%2").arg(settings["host"].toString()).arg(settings["port"].toInt(443));
+
+    QJsonObject socks5;
+    socks5["listen"] = QString("%1:%2").arg(this->listenIp).arg(this->socksPort);
+    socks5["disable_udp"] = false;
+    hysteriaConf["socks5"] = socks5;
+
+    hysteriaConf["retry"] = -1;
+    hysteriaConf["retry_interval"] = 5;
+    hysteriaConf["insecure"] = settings["insecure"].toBool(false);
+
+    if (const auto caPath = settings["ca"].toString().trimmed(); !caPath.isEmpty()) {
+        hysteriaConf["ca"] = caPath;
+    } else {
+        hysteriaConf.remove("ca");
     }
 
-    if (this->port <= 0 || this->port >= 65536)
-    {
-        emit OnKernelLogAvailable("warning: outbound port falled back to 443");
-        this->port = 443;
+    if (const auto alpn = settings["alpn"].toString().trimmed(); !alpn.isEmpty()) {
+        hysteriaConf["alpn"] = alpn;
+    } else {
+        hysteriaConf.remove("alpn");
+    }
+
+    if (const auto protocol = settings["protocol"].toString().trimmed(); !protocol.isEmpty()) {
+        hysteriaConf["protocol"] = protocol;
+    } else {
+        emit OnKernelLogAvailable("warning: outbound protocol falled back to udp");
+        hysteriaConf["protocol"] = "udp";
+    }
+
+    if (const auto obfs = settings["obfs"].toString().trimmed(); !obfs.isEmpty()) {
+        hysteriaConf["obfs"] = obfs;
+    } else {
+        hysteriaConf.remove("obfs");
+    }
+
+    if (const auto authStr = settings["auth_str"].toString().trimmed(); !authStr.isEmpty()) {
+        hysteriaConf["auth_str"] = authStr;
+    } else {
+        hysteriaConf.remove("authStr");
+    }
+
+    hysteriaConf["down_mbps"] = settings["down_mbps"].toInt(300);
+    hysteriaConf["up_mbps"] = settings["up_mbps"].toInt(100);
+
+
+    if (const auto serverName = settings["sni"].toString().trimmed(); !serverName.isEmpty()) {
+        hysteriaConf["server_name"] = serverName;
+    } else {
+        hysteriaConf.remove("server_name");
     }
 }
 
@@ -114,6 +124,7 @@ bool HysteriaKernel::StopKernel()
     {
         httpProxy.close();
     }
+    hysteriaConfJson.remove();
     isStarted = false;
     this->process.close();
     this->process.waitForFinished();

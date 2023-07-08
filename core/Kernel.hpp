@@ -3,6 +3,7 @@
 #include "interface/utils/HttpProxy.hpp"
 
 #include <QProcess>
+#include <QTemporaryFile>
 
 class HysteriaKernel : public Qv2rayPlugin::PluginKernel
 {
@@ -17,12 +18,10 @@ class HysteriaKernel : public Qv2rayPlugin::PluginKernel
     }
 
   private:
-    QString protocol;
-    QString host;
-    QString username;
-    QString password;
+    QJsonObject hysteriaConf;
+    QTemporaryFile hysteriaConfJson;
+
     QString listenIp;
-    bool padding;
     int port;
     QProcess process;
     //

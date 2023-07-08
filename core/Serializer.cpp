@@ -107,7 +107,9 @@ const QPair<QString, QJsonObject> HysteriaOutboundHandler::DeserializeOutbound(c
         *alias = QString("[%1]-%2:%3").arg(hysteriaUrl.scheme()).arg(hysteriaUrl.host()).arg(hysteriaUrl.port());
     }
 
-    result["insecure"] = trueList.contains(query.queryItemValue("insecure").toLower()); // insecure, optional
+    if (const auto insecure = trueList.contains(query.queryItemValue("insecure").toLower()); insecure) {
+        result["insecure"] =  insecure; // insecure, optional
+    }
     result["host"] = hysteriaUrl.host();
     result["port"] = hysteriaUrl.port(443);
     result["protocol"] = getQueryValue("protocol").isEmpty() ? "udp" : getQueryValue("protocol"); // protocol, optional, default "udp"
@@ -127,12 +129,15 @@ const QPair<QString, QJsonObject> HysteriaOutboundHandler::DeserializeOutbound(c
 
     result["up_mbps"] = getQueryValue("upmbps");
     result["down_mbps"] = getQueryValue("downmbps");
-    result["alpn"] = getQueryValue("alpn"); // alpn: QUIC ALPN (optional)
+    if (const auto alpn =  getQueryValue("alpn"); !alpn.isEmpty()) {
+        result["alpn"] = alpn; // alpn: QUIC ALPN (optional)
+    }
     if (const auto obfsMode = getQueryValue("obfs"); !obfsMode.isEmpty()) {
         qWarning() << "Non-empty obfs mode is not well supported. Official document missing.";
     }
-    result["obfs_mode"] = getQueryValue("obfs"); // obfs: Obfuscation mode (optional, empty or "xplus")
-    result["obfs"] = getQueryValue("obfsParam"); // obfsParam: Obfuscation password (optional)
+    if (const auto obfs = getQueryValue("obfsParam").trimmed(); !obfs.isEmpty()) {
+        result["obfs"] = obfs; // obfsParam: Obfuscation password (optional)
+    }
 
     return { "hysteria", result};
 }

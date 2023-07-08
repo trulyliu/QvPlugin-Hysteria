@@ -21,6 +21,7 @@ void OutboundEditor::SetContent(const QJsonObject &r)
     textSNI->setText(root["sni"].toString());
     textObfs->setText(root["obfs"].toString());
     checkInsecure->setChecked(root["insecure"].toBool());
+    textCaPath->setText(root["ca"].toString());
 }
 
 void OutboundEditor::changeEvent(QEvent *e)
@@ -41,21 +42,37 @@ void OutboundEditor::on_comboProtocol_currentTextChanged(const QString &arg1)
 
 void OutboundEditor::on_textAlpn_textEdited(const QString &arg1)
 {
-    root["alpn"] = arg1;
+    if (arg1.isEmpty()) {
+        root.remove("alpn");
+    } else {
+        root["alpn"] = arg1;
+    }
 }
 
 void OutboundEditor::on_textAuthStr_textEdited(const QString &arg1)
 {
-    root["auth_str"] = arg1;
+    if (arg1.isEmpty()) {
+        root.remove("auth_str");
+    } else {
+        root["auth_str"] = arg1;
+    }
 }
 
 void OutboundEditor::on_checkInsecure_stateChanged(int arg1)
 {
-    root["insecure"] = arg1 == Qt::Checked;
+    if (arg1 == Qt::Checked) {
+        root["insecure"] = arg1 == Qt::Checked;
+    } else {
+        root.remove("insecure");
+    }
 }
 
 void OutboundEditor::on_textSNI_textEdited(const QString &arg1) {
-    root["sni"] = arg1;
+    if (arg1.isEmpty()) {
+        root.remove("sni");
+    } else {
+        root["sni"] = arg1;
+    }
 }
 
 void OutboundEditor::on_textUpMbps_textEdited(const QString &arg1) {
@@ -67,12 +84,20 @@ void OutboundEditor::on_textDownMbps_textEdited(const QString &arg1) {
 }
 
 void OutboundEditor::on_textObfs_textEdited(const QString &arg1) {
-    root["obfs"] = arg1;
+    if (arg1.isEmpty()) {
+        root.remove("obfs");
+    } else {
+        root["obfs"] = arg1;
+    }
 }
 
 void OutboundEditor::on_textCaPath_textEdited(const QString &arg1)
 {
-    root.insert("ca", arg1);
+    if (arg1.isEmpty()) {
+        root.remove("ca");
+    } else {
+        root["ca"] = arg1;
+    }
 }
 
 void OutboundEditor::on_buttonBrowseCa_clicked()
