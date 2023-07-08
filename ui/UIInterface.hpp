@@ -10,7 +10,7 @@ class NaiveUIInterface : public Qv2rayPlugin::PluginGUIInterface
 {
     QIcon Icon() const override
     {
-        return QIcon(":/assets/naive.png");
+        return QIcon(":/assets/hysteria.png");
     }
     virtual std::unique_ptr<QvPluginSettingsWidget> createSettingsWidgets() const override
     {
@@ -22,7 +22,7 @@ class NaiveUIInterface : public Qv2rayPlugin::PluginGUIInterface
     }
     virtual QList<typed_plugin_editor> createOutboundEditors() const override
     {
-        return { MakeEditorInfoPair<OutboundEditor>("naive", "Hysteria") };
+        return { MakeEditorInfoPair<OutboundEditor>("hysteria", "Hysteria") };
     }
     virtual std::unique_ptr<QvPluginMainWindowWidget> createMainWindowWidget() const override
     {
