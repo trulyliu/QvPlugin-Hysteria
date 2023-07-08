@@ -80,9 +80,10 @@
     <widget class="QLabel" name="labelNotes">
      <property name="text">
       <string>Too young, too simple;
-Sometimes naive!
+Sometimes hysteria
+!
 
---- The Elder Jiang</string>
+--- The Elder</string>
      </property>
      <property name="textFormat">
       <enum>Qt::PlainText</enum>
