@@ -110,7 +110,6 @@ void HysteriaKernel::SetConnectionSettings(const QMap<Qv2rayPlugin::KernelOption
     hysteriaConf["down_mbps"] = settings["down_mbps"].toInt(300);
     hysteriaConf["up_mbps"] = settings["up_mbps"].toInt(100);
 
-
     if (const auto serverName = settings["sni"].toString().trimmed(); !serverName.isEmpty()) {
         hysteriaConf["server_name"] = serverName;
     } else {

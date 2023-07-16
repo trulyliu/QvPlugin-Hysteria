@@ -7,6 +7,8 @@ OutboundEditor::OutboundEditor(QWidget *parent) : Qv2rayPlugin::QvPluginEditor(p
     setupUi(this);
     textUpMbps->setValidator(new QRegularExpressionValidator(QRegularExpression("[0-9]+$")));
     textDownMbps->setValidator(new QRegularExpressionValidator(QRegularExpression("[0-9]+$")));
+    root["up_mbps"] = "100";
+    root["down_mbps"] = "300";
 }
 
 void OutboundEditor::SetContent(const QJsonObject &r)

@@ -127,8 +127,18 @@ const QPair<QString, QJsonObject> HysteriaOutboundHandler::DeserializeOutbound(c
         result["sni"] = getQueryValue("peer");
     }
 
-    result["up_mbps"] = getQueryValue("upmbps");
-    result["down_mbps"] = getQueryValue("downmbps");
+    if (const auto up_mbps = getQueryValue("upmbps"); !up_mbps.isEmpty()) {
+        result["up_mbps"] = up_mbps;
+    } else {
+        result["up_mbps"] = "100";
+    }
+
+    if (const auto down_mbps = getQueryValue("downmbps"); !down_mbps.isEmpty()) {
+        result["down_mbps"] = down_mbps;
+    } else {
+        result["down_mbps"] = "300";
+    }
+
     if (const auto alpn =  getQueryValue("alpn"); !alpn.isEmpty()) {
         result["alpn"] = alpn; // alpn: QUIC ALPN (optional)
     }
